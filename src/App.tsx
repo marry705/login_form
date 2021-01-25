@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // import ROUTES from './units';
 import { Box } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import LoginForm from './components/LoginForm';
+import RegistrationForm from './components/RegistrationForm';
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -23,6 +23,7 @@ const App: React.FC = () => {
 
   return (
     <Box className={classes.root}>
+      <RegistrationForm />
       {/* <BrowserRouter>
         <Switch>
           <Route path={ROUTES.LOGIN}></Route>
