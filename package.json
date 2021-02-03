@@ -6,6 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
+    "@types/express": "^4.17.11",
     "express": "^4.17.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -40,7 +41,8 @@
   },
   "scripts": {
     "build": "webpack --mode production --progress --hide-modules",
-    "start": "webpack-dev-server --open --hot",
+    "start-web": "webpack-dev-server --open --hot",
+    "start": "node index.ts",
     "bundle-size": "webpack-bundle-analyzer --port 3001 dist/stats.json",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "npm run lint -- --fix"

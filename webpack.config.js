@@ -35,11 +35,11 @@ module.exports = {
     path: path.resolve(__dirname, 'dist/'),
     filename: 'bundle.js',
   },
-  devServer: {
-    contentBase: path.join(__dirname, 'dist/'),
-    port: 3000,
-    hotOnly: true,
-  },
+  // devServer: {
+  //   contentBase: path.join(__dirname, 'dist/'),
+  //   port: 3000,
+  //   hotOnly: true,
+  // },
   plugins: [
     new BundleAnalyzerPlugin(
       {

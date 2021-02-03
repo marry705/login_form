@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Select, Input, Button } from '@material-ui/core';
+import { Select, InputLabel, Input, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../units';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   formContainer: {
@@ -13,15 +15,30 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     '& .MuiInput-root': {
       marginBottom: theme.spacing(2),
     },
+    '& .MuiInputBase-root': {
+      marginBottom: theme.spacing(2),
+      width: '100%',
+    },
+    '& .MuiFilledInput-input': {
+      padding: '12px 12px 10px',
+    },
+    '& .MuiFilledInput-root': {
+      backgroundColor: theme.palette.background.default,
+    }
   },
 }));
 
 const RegistrationForm: React.FC = () => {
   const classes = useStyles();
+  const companies = [];
 
-  const companies = [{ id: '0', name: 'new' }, { id: '1', name: 'new1' }, { id: '2', name: 'new2' }];
-  const [userCompany, setUserCompany] = React.useState<{ id: string; name: string }>(companies[0]);
-
+  React.useEffect(() => {
+    fetch('/api/company')
+      .then(res => res.json())
+      .then();
+  }, []);
+  
+  const [userCompany, setUserCompany] = React.useState<string>(companies[0].id);
   const [userEmail, changeEmail] = React.useState<string>('');
   const [userPassword, changePassword] = React.useState<string>('');
   const [userName, changeUserName] = React.useState<string>('');
@@ -40,7 +57,11 @@ const RegistrationForm: React.FC = () => {
 
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     changePassword(e.target.value);
-    checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
+    // if (userPassword) {
+    //   checkPassword(user.password === e.target.value);
+    // } else {
+      checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
+    //}
   };
 
   const changeNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,56 +71,69 @@ const RegistrationForm: React.FC = () => {
 
 
   const handleChangeCompany = (e: React.ChangeEvent<{ value: unknown }>) => {
-    console.log(e.target.value);
-    //setUserCompany()
+    setUserCompany(e.target.value as string);
   };
 
   return (
-    <form
-      onSubmit={(e) => { e.preventDefault(); }}
-      className={classes.formContainer}
-    >
-      <Input
-        fullWidth
-        required
-        value={userEmail}
-        type="email"
-        placeholder="Enter your email"
-        onChange={changeEmailHandler}
-      />
-      <Input
-        fullWidth
-        required
-        value={userPassword}
-        type="password"
-        placeholder="Enter your password"
-        onChange={changePasswordHandler}
-      />
-      <Input
-        fullWidth
-        required
-        value={userName}
-        type="text"
-        placeholder="Enter your name"
-        onChange={changeNameHandler}
-      />
-      <Select
-        value={userCompany.id}
-        onChange={handleChangeCompany}
+    <>
+      <Link to={ROUTES.LOGIN}>
+        <Button
+          variant="contained"
+          color="secondary" 
+          >
+          Enter
+        </Button>
+      </Link>
+      <form
+        onSubmit={(e) => { e.preventDefault(); }}
+        className={classes.formContainer}
       >
-        { companies.map(company =>
-          <option key={company.id} value={company.id}>{company.name}</option>
-        )};
-      </Select>
-      <Button
-        onClick={registrationUser}
-        variant="contained"
-        color="secondary"
-        disabled={!(isEmailValid && isPasswordValid && isNameValid)}
-      >
-        Enter
-      </Button>
-    </form>
+        <Input
+          fullWidth
+          required
+          value={userEmail}
+          type="email"
+          placeholder="Enter your email"
+          onChange={changeEmailHandler}
+        />
+        <Input
+          fullWidth
+          required
+          value={userPassword}
+          type="password"
+          placeholder="Enter your password"
+          onChange={changePasswordHandler}
+        />
+        <Input
+          fullWidth
+          required
+          value={userName}
+          type="text"
+          placeholder="Enter your name"
+          onChange={changeNameHandler}
+        />
+        <InputLabel id="compony-select-label">Compony</InputLabel>
+        <Select
+          labelId="compony-select-label"
+          native
+          variant="filled"
+          value={userCompany}
+          onChange={handleChangeCompany}
+        >
+          { companies.map(company =>
+            <option key={company.id} value={company.id}>{company.name}</option>
+          )};
+        </Select>
+        <Button
+          onClick={registrationUser}
+          variant="contained"
+          color="secondary"
+          disabled={!(isEmailValid && isPasswordValid && isNameValid)}
+        >
+          Enter
+        </Button>
+      </form>
+    </>
   );
 };
 
