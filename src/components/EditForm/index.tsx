@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Select, InputLabel, Input, Button } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
+import { ROUTES } from '../../units';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 
@@ -29,6 +31,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const EditForm: React.FC = () => {
   const classes = useStyles();
+
+  if (true) { return <Redirect to={ROUTES.LOGIN} /> }
 
   return (
     <>

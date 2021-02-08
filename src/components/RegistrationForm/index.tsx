@@ -1,10 +1,20 @@
 import * as React from 'react';
-import { Select, InputLabel, Input, Button } from '@material-ui/core';
+import { Select, InputLabel, Input, Button, AppBar } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../units';
+import { Compony, User } from '../../types'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+  headerBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: theme.spacing(2),
+    alignItems: 'center',
+  },
+  navItem: {
+    textDecoration: 'none',
+  },
   formContainer: {
     flex: '1 1 auto',
     margin: theme.spacing(2),
@@ -30,24 +40,46 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const RegistrationForm: React.FC = () => {
   const classes = useStyles();
-  const companies = [];
+  const [companies, setСompanies] = React.useState<Compony[]>([]);
+  const [userCompany, setUserCompany] = React.useState<string>('');
+  const [userEmail, changeEmail] = React.useState<string>('');
+  const [userPassword, changePassword] = React.useState<string>('');
+  const [userName, changeUserName] = React.useState<string>('');
 
   React.useEffect(() => {
     fetch('/api/company')
       .then(res => res.json())
-      .then();
+      .then((res) => {
+        setСompanies(res); 
+        setUserCompany(res[0].id);
+      });
   }, []);
-  
-  const [userCompany, setUserCompany] = React.useState<string>(companies[0].id);
-  const [userEmail, changeEmail] = React.useState<string>('');
-  const [userPassword, changePassword] = React.useState<string>('');
-  const [userName, changeUserName] = React.useState<string>('');
 
   const [isEmailValid, checkEmail] = React.useState<boolean>(false);
   const [isPasswordValid, checkPassword] = React.useState<boolean>(false);
   const [isNameValid, checkUserName] = React.useState<boolean>(false);
 
   const registrationUser = () => {
+    const newUser: User = {
+      id: '1',
+      componyId: userCompany,
+      name: userName,
+      email: userEmail,
+      password: userPassword
+    };
+
+    fetch('/api/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: newUser })})
+        .then((req) => {
+          console.log(req);
+        })
+        .catch(err => {
+          console.error(err);
+        });
   };
 
   const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +89,7 @@ const RegistrationForm: React.FC = () => {
 
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     changePassword(e.target.value);
-    // if (userPassword) {
-    //   checkPassword(user.password === e.target.value);
-    // } else {
-      checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
-    //}
+    checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
   };
 
   const changeNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,14 +104,17 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <>
-      <Link to={ROUTES.LOGIN}>
-        <Button
-          variant="contained"
-          color="secondary" 
-          >
-          Enter
-        </Button>
-      </Link>
+      <AppBar className={classes.headerBar} color="transparent" position="static">
+        <Link to={ROUTES.LOGIN} className={classes.navItem}>
+          <Button
+            variant="contained"
+            color="secondary" 
+            >
+            Login
+          </Button>
+        </Link>
+      </AppBar>
+
       <form
         onSubmit={(e) => { e.preventDefault(); }}
         className={classes.formContainer}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { ROUTES } from './units';
 import { Box } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -29,6 +29,7 @@ const App: React.FC = () => {
           <Route path={ROUTES.REGISTRATION} component={RegistrationForm}></Route>
           <Route path={ROUTES.LOGIN} component={LoginForm}></Route>
           <Route path={ROUTES.EDIT} component={EditForm}></Route>
+          <Redirect from="/" to={ROUTES.REGISTRATION} />
         </Switch>
     </Box>
   );

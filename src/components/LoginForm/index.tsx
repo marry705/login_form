@@ -1,8 +1,19 @@
 import * as React from 'react';
-import { Input, Button } from '@material-ui/core';
+import { Input, Button, AppBar } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../units';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+  headerBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: theme.spacing(2),
+    alignItems: 'center',
+  },
+  navItem: {
+    textDecoration: 'none',
+  },
   formContainer: {
     flex: '1 1 auto',
     margin: theme.spacing(2),
@@ -17,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const LoginForm: React.FC = () => {
+
   const classes = useStyles();
 
   const [userEmail, changeEmail] = React.useState<string>('');
@@ -36,9 +48,36 @@ const LoginForm: React.FC = () => {
   };
 
   const setUser = () => {
+    const currentUser = {
+      email: userEmail,
+      password: userPassword
+    };
+
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: currentUser })})
+        .then((req) => {
+          if (req.status === 200) {
+            console.log('123');
+          }
+        });
   };
 
   return (
+    <>
+    <AppBar className={classes.headerBar} color="transparent" position="static">
+      <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
+        <Button
+          variant="contained"
+          color="secondary" 
+          >
+          Registration
+        </Button>
+      </Link>
+    </AppBar>
     <form
       onSubmit={(e) => { e.preventDefault(); }}
       className={classes.formContainer}
@@ -68,6 +107,7 @@ const LoginForm: React.FC = () => {
         Enter
       </Button>
     </form>
+  </>
   );
 };
 
