@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { ROUTES } from './units';
+import { ROUTES } from './constants';
 import { Box } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import RegistrationForm from './components/RegistrationForm';

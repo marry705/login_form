@@ -1,23 +1,24 @@
 import * as React from 'react';
-import { Select, InputLabel, Input, Button } from '@material-ui/core';
+import { Select, InputLabel, Input, Button, AppBar } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import { Company, User } from '../../../server/types'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+  headerBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: theme.spacing(2),
+    alignItems: 'center',
+  },
   navItem: {
-    marginBottom: theme.spacing(2),
     textDecoration: 'none',
   },
   formContainer: {
     flex: '1 1 auto',
-    margin: theme.spacing(3),
-    padding: theme.spacing(2),
+    margin: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.palette.background.default,
-    borderRadius: theme.spacing(1),
     justifyContent: 'center',
     alignItems: 'center',
     '& .MuiInput-root': {
@@ -106,58 +107,6 @@ const RegistrationForm: React.FC = () => {
         onSubmit={(e) => { e.preventDefault(); }}
         className={classes.formContainer}
       >
-        <Link to={ROUTES.LOGIN} className={classes.navItem}>
-          <Button
-            variant="contained"
-            color="secondary" 
-            >
-            Login
-          </Button>
-        </Link>
-        <Input
-          fullWidth
-          required
-          value={userEmail}
-          type="email"
-          placeholder="Enter your email"
-          onChange={changeEmailHandler}
-        />
-        <Input
-          fullWidth
-          required
-          value={userPassword}
-          type="password"
-          placeholder="Enter your password"
-          onChange={changePasswordHandler}
-        />
-        <Input
-          fullWidth
-          required
-          value={userName}
-          type="text"
-          placeholder="Enter your name"
-          onChange={changeNameHandler}
-        />
-        <InputLabel id="company-select-label">Company</InputLabel>
-        <Select
-          labelId="company-select-label"
-          native
-          variant="filled"
-          value={userCompany}
-          onChange={handleChangeCompany}
-        >
-          { companies.map(company =>
-            <option key={company.id} value={company.id}>{company.name}</option>
-          )};
-        </Select>
-        <Button
-          onClick={registrationUser}
-          variant="contained"
-          color="secondary"
-          disabled={!(isEmailValid && isPasswordValid && isNameValid)}
-        >
-          Enter
-        </Button>
       </form>
     </>
   );

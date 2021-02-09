@@ -1,12 +1,12 @@
 export type User = {
     id: string,
-    componyId: string,
+    companyId: string,
     name: string,
     email: string,
     password: string
 };
 
-export type Compony = {
+export type Company = {
     id: string,
     name: string,
 };

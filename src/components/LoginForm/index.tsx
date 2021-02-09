@@ -1,22 +1,17 @@
 import * as React from 'react';
-import { Input, Button, AppBar } from '@material-ui/core';
+import { Input, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import { ROUTES } from '../../units';
+import { ROUTES } from '../../constants';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  headerBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2),
-    alignItems: 'center',
-  },
   navItem: {
     textDecoration: 'none',
   },
   formContainer: {
     flex: '1 1 auto',
     margin: theme.spacing(2),
+    padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -68,7 +63,10 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-    <AppBar className={classes.headerBar} color="transparent" position="static">
+    <form
+      onSubmit={(e) => { e.preventDefault() }}
+      className={classes.formContainer}
+    >
       <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
         <Button
           variant="contained"
@@ -77,11 +75,6 @@ const LoginForm: React.FC = () => {
           Registration
         </Button>
       </Link>
-    </AppBar>
-    <form
-      onSubmit={(e) => { e.preventDefault(); }}
-      className={classes.formContainer}
-    >
       <Input
         fullWidth
         required
