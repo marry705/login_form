@@ -1,7 +1,11 @@
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { currentUser, UserState } from '../../redux/type';
+import { Link, Redirect } from 'react-router-dom';
 import { Input, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+
+import { login } from '../../redux/actions'
 import { ROUTES } from '../../constants';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -23,6 +27,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const LoginForm: React.FC = () => {
+  const dispatch = useDispatch();
+  const { isAuth, error } = useSelector((state: UserState) => state);
 
   const classes = useStyles();
 
@@ -43,23 +49,15 @@ const LoginForm: React.FC = () => {
   };
 
   const setUser = () => {
-    const currentUser = {
+    const currentUser: currentUser = {
       email: userEmail,
       password: userPassword
     };
 
-    fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ user: currentUser })})
-        .then((req) => {
-          if (req.status === 200) {
-            console.log('123');
-          }
-        });
+    dispatch(login(currentUser));
   };
+
+  if (isAuth) { return <Redirect to={ROUTES.EDIT} /> }
 
   return (
     <>

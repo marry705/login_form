@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const RegistrationForm: React.FC = () => {
+const Form: React.FC = () => {
   const classes = useStyles();
   const [companies, setСompanies] = React.useState<Company[]>([]);
   const [userCompany, setUserCompany] = React.useState<string>('');
@@ -112,4 +112,4 @@ const RegistrationForm: React.FC = () => {
   );
 };
 
-export default RegistrationForm;
+export default Form;
