@@ -71,7 +71,10 @@ const RegistrationForm: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: newUser })})
+      body: { 
+        'user': JSON.stringify(newUser),
+      },
+    })
         .then((req) => {
           console.log(req);
         })

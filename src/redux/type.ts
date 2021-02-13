@@ -16,17 +16,13 @@ export type userData = {
 export type UserState = {
     user: User,
     error: string,
+    loading: boolean,
     isAuth: boolean,
 }
 
-export type loginAction = {
-    type: typeof USER.LOGIN,
+export type setUserAction = {
+    type: typeof USER.SET_USER,
     payload: User,
-}
-
-export type checkAction = {
-    type: typeof USER.CHECK,
-    payload: userData,
 }
 
 interface logoutAction {
@@ -34,9 +30,14 @@ interface logoutAction {
     payload: null,
 }
 
-export type editAction = {
-    type: typeof USER.EDIT,
-    payload: User,
+interface stopRequestAction {
+    type: typeof USER.STOP_REQUEST,
+    payload: null,
+}
+
+interface startRequestAction {
+    type: typeof USER.START_REQUEST,
+    payload: null,
 }
 
 export type errorAddAction = {
@@ -49,6 +50,11 @@ interface errorCreaneAction {
     payload: null,
 }
 
-export type authAction = loginAction | checkAction | logoutAction | editAction | errorAddAction | errorCreaneAction;
+export type authAction = logoutAction |
+    setUserAction |
+    stopRequestAction |
+    startRequestAction |
+    errorAddAction |
+    errorCreaneAction;
 
 export type DispatchType = (args: authAction) => authAction;

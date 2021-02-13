@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentUser, UserState } from '../../redux/type';
+import { userData, UserState } from '../../redux/type';
 import { Link, Redirect } from 'react-router-dom';
 import { Input, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { login } from '../../redux/actions'
+import { login } from '../../redux/actions';
 import { ROUTES } from '../../constants';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -27,10 +27,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const LoginForm: React.FC = () => {
-  const dispatch = useDispatch();
-  const { isAuth, error } = useSelector((state: UserState) => state);
-
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+  const { isAuth, error, loading } = useSelector((state: UserState) => state);
 
   const [userEmail, changeEmail] = React.useState<string>('');
   const [userPassword, changePassword] = React.useState<string>('');
@@ -49,7 +49,7 @@ const LoginForm: React.FC = () => {
   };
 
   const setUser = () => {
-    const currentUser: currentUser = {
+    const currentUser: userData = {
       email: userEmail,
       password: userPassword
     };

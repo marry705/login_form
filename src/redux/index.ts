@@ -1,12 +1,14 @@
 import { USER } from '../constants';
-import { User, UserState, authAction, errorAddAction, editAction, loginAction } from './type';
+import { User, UserState, authAction, errorAddAction, setUserAction } from './type';
+import { getLocalStorage, setLocalStorage, clearStorage } from '../services/storageService';
 
-const user: User = {};
+const user = getLocalStorage('user');
 
 const initialState: UserState = {
     user,
     error: '', 
-    isAuth: !!user,
+    loading: false,
+    isAuth: !user,
 };
 
 const rootReducer = (
@@ -14,25 +16,31 @@ const rootReducer = (
   action: authAction,
 ): UserState => {
   switch (action.type) {
-    case USER.LOGIN:
+    case USER.START_REQUEST:
 
-      return { ...state, user: (<loginAction>action).payload, isAuth: true };
+      return { ...state, loading: true };
+
+    case USER.STOP_REQUEST:
+
+      return { ...state, loading: false };
 
     case USER.LOGOUT:
 
+      clearStorage('user');
       return { ...state, user: {}, isAuth: false };
+    
+    case USER.SET_USER:
 
-    case USER.EDIT:
-
-      return { ...state, user: (<editAction>action).payload };
+      setLocalStorage('user', (<setUserAction>action).payload);
+      return { ...state, user: (<setUserAction>action).payload };
 
     case USER.CLEANE_ERROR:
 
-        return { ...state, error: '' };
+      return { ...state, error: '' };
 
     case USER.ADD_ERROR:
 
-        return { ...state, error: (<errorAddAction>action).payload };
+      return { ...state, error: (<errorAddAction>action).payload };
 
     default: return state;
   }

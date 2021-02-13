@@ -5,8 +5,10 @@ export const ROUTES = {
 };
 
 export const USER = {
+    STOP_REQUEST: 'STOP_REQUEST', 
+    START_REQUEST: 'START_REQUEST', 
+    SET_USER: 'SET_USER',
     LOGIN: 'LOGIN', 
-    CHECK: 'CHECK', 
     EDIT: 'EDIT',
     LOGOUT: 'LOGOUT',
     ADD_ERROR: 'ADD_ERROR',
