@@ -4,12 +4,12 @@ import { USER } from '../constants';
 export function login(data: userData): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
     dispatch(startRequest());
-    fetch('api/login', {
+    fetch('/api/login', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: data }),
+      body: JSON.stringify({ 'user': data }),
     })
         .then(res => res.json())
         .then((data) => dispatch(set(data)))
@@ -21,17 +21,34 @@ export function login(data: userData): (dispatch: DispatchType) => void {
 export function edit(data: User): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
     dispatch(startRequest());
-    fetch('api/edit', {
+    fetch('/api/user/edit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: data }),
+      body: JSON.stringify({ 'user': data }),
     })
-        .then(res => res.json())
-        .then((data) => dispatch(set(data)))
-        .catch((error: Error) => dispatch(addError(error.message)))
-        .finally(() => dispatch(stopRequest()))
+      .then(res => res.json())
+      .then((data) => dispatch(set(data)))
+      .catch((error: Error) => dispatch(addError(error.message)))
+      .finally(() => dispatch(stopRequest()))
+  }
+};
+
+export function deleteUser(data: User): (dispatch: DispatchType) => void {
+  return (dispatch: DispatchType) => {
+    dispatch(startRequest());
+    fetch('api/user/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 'user': data }),
+    })
+      .then(res => res.json())
+      .then(() => dispatch(logout()))
+      .catch((error: Error) => dispatch(addError(error.message)))
+      .finally(() => dispatch(stopRequest()))
   }
 };
 

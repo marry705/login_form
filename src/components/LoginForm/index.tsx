@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData, UserState } from '../../redux/type';
 import { Link, Redirect } from 'react-router-dom';
-import { Input, Button } from '@material-ui/core';
+import { Input, Button, Alert,  } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { login } from '../../redux/actions';
@@ -61,44 +61,55 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-    <form
-      onSubmit={(e) => { e.preventDefault() }}
-      className={classes.formContainer}
-    >
-      <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
-        <Button
-          variant="contained"
-          color="secondary" 
+      {loading
+      ? 
+        <h1>Loading</h1>
+      :
+        <form
+          onSubmit={(e) => { e.preventDefault() }}
+          className={classes.formContainer}
+        >
+          <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
+          <Button
+            variant="contained"
+            color="secondary" 
+            >
+            Registration
+          </Button>
+        </Link>
+          <Input
+            fullWidth
+            required
+            value={userEmail}
+            type="email"
+            placeholder="Enter your email"
+            onChange={changeEmailHandler}
+          />
+          <Input
+            fullWidth
+            required
+            value={userPassword}
+            type="password"
+            placeholder="Enter your password"
+            onChange={changePasswordHandler}
+          />
+          <Button
+            onClick={setUser}
+            variant="contained"
+            color="secondary"
+            disabled={!(isEmailValid && isPasswordValid) || loading}
           >
-          Registration
-        </Button>
-      </Link>
-      <Input
-        fullWidth
-        required
-        value={userEmail}
-        type="email"
-        placeholder="Enter your email"
-        onChange={changeEmailHandler}
-      />
-      <Input
-        fullWidth
-        required
-        value={userPassword}
-        type="password"
-        placeholder="Enter your password"
-        onChange={changePasswordHandler}
-      />
-      <Button
-        onClick={setUser}
-        variant="contained"
-        color="secondary"
-        disabled={!(isEmailValid && isPasswordValid)}
-      >
-        Enter
-      </Button>
-    </form>
-  </>
+            Enter
+          </Button>
+          {error
+            ? <Alert variant="outlined" severity="error">
+                {error}
+              </Alert>
+            : null
+          }
+        </form>
+      }
+    </>
   );
 };
 

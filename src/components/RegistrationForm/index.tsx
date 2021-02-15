@@ -66,21 +66,19 @@ const RegistrationForm: React.FC = () => {
       password: userPassword
     };
 
-    fetch('/api/user', {
+    fetch('/api/user/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: { 
-        'user': JSON.stringify(newUser),
-      },
+      body: JSON.stringify({ 'user' : newUser }),
     })
-        .then((req) => {
-          console.log(req);
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      .then((req) => {
+        console.log(req);
+      })
+      .catch(err => {
+        console.error(err);
+      });
   };
 
   const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

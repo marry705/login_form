@@ -2,10 +2,10 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { User, UserState } from '../../redux/type';
-import { Select, InputLabel, Input, Button } from '@material-ui/core';
+import { Input, Button, Alert } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { edit } from '../../redux/actions';
+import { edit, deleteUser, logout } from '../../redux/actions';
 import { ROUTES } from '../../constants';
 
 
@@ -39,13 +39,31 @@ const EditForm: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, error, loading, user } = useSelector((state: UserState) => state);
 
+  const [userEmail, changeEmail] = React.useState<string>(user.email);
+  const [userPassword, changePassword] = React.useState<string>(user.password);
+  const [userName, changeUserName] = React.useState<string>(user.name);
+
+  const [isEmailValid, checkEmail] = React.useState<boolean>(false);
+  const [isPasswordValid, checkPassword] = React.useState<boolean>(false);
+  const [isNameValid, checkUserName] = React.useState<boolean>(false);
+
+  const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeEmail(e.target.value);
+    checkEmail(/.+@.+\.[A-Za-z]+$/.test(e.target.value));
+  };
+
+  const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changePassword(e.target.value);
+    checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
+  };
+
   const editUser = () => {
     const currentUser: User = {
-      // id: user.id,
-      // companyId: user.companyId,
-      // name: userName,
-      // email: userEmail,
-      // password: userPassword,
+      id: user.id,
+      companyId: user.companyId,
+      name: userName,
+      email: userEmail,
+      password: userPassword,
     };
 
     dispatch(edit(currentUser));
@@ -55,7 +73,60 @@ const EditForm: React.FC = () => {
 
   return (
     <>
-      <h1>Edit</h1>
+      {loading
+      ? 
+        <h1>Loading</h1>
+      :
+        <form
+          onSubmit={(e) => { e.preventDefault() }}
+          className={classes.formContainer}
+        >
+          <Button
+            variant="contained"
+            color="secondary" 
+            onClick={() => dispatch(logout())}
+            >
+            Logout
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary" 
+            onClick={() => dispatch(deleteUser(user))}
+            >
+            Remove
+          </Button>
+          <Input
+            fullWidth
+            required
+            value={userEmail}
+            type="email"
+            placeholder="Enter your email"
+            onChange={changeEmailHandler}
+          />
+          <Input
+            fullWidth
+            required
+            value={userPassword}
+            type="password"
+            placeholder="Enter your password"
+            onChange={changePasswordHandler}
+          />
+          <Button
+            onClick={editUser}
+            variant="contained"
+            color="secondary"
+            disabled={!(isEmailValid && isPasswordValid) || loading}
+          >
+            Enter
+          </Button>
+          {error
+            ? <Alert variant="outlined" severity="error">
+                {error}
+              </Alert>
+            : null
+          }
+        </form>
+      }
     </>
   );
 };
