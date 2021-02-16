@@ -5,16 +5,19 @@ export function login(data: userData): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
     dispatch(startRequest());
     fetch('/api/login', {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 'user': data }),
     })
-        .then(res => res.json())
-        .then((data) => dispatch(set(data)))
-        .catch((error: Error) => dispatch(addError(error.message)))
-        .finally(() => dispatch(stopRequest()))
+      .then(res => res.json())
+      .then((data) => {
+        console.log(data);
+        //dispatch(set(data))
+      })
+      .catch((error: Error) => dispatch(addError(error.message)))
+      .finally(() => dispatch(stopRequest()))
   }
 };
 
@@ -28,8 +31,9 @@ export function edit(data: User): (dispatch: DispatchType) => void {
       },
       body: JSON.stringify({ 'user': data }),
     })
-      .then(res => res.json())
-      .then((data) => dispatch(set(data)))
+      .then(res => console.log(res.json()))
+      // .then(res => res.json())
+      // .then((data) => dispatch(set(data)))
       .catch((error: Error) => dispatch(addError(error.message)))
       .finally(() => dispatch(stopRequest()))
   }

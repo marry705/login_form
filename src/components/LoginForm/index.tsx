@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData, UserState } from '../../redux/type';
 import { Link, Redirect } from 'react-router-dom';
-import { Input, Button, Alert,  } from '@material-ui/core';
+import { Input, Button } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { login } from '../../redux/actions';

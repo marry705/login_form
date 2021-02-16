@@ -32,7 +32,7 @@ const rootReducer = (
     case USER.SET_USER:
 
       setLocalStorage('user', (<setUserAction>action).payload);
-      return { ...state, user: (<setUserAction>action).payload };
+      return { ...state, user: (<setUserAction>action).payload, isAuth: true };
 
     case USER.CLEANE_ERROR:
 
