@@ -1,5 +1,5 @@
 import { USER } from '../constants';
-import { User, UserState, authAction, errorAddAction, setUserAction } from './type';
+import { UserState, authAction, errorAddAction, setUserAction } from './type';
 import { getLocalStorage, setLocalStorage, clearStorage } from '../services/storageService';
 
 const user = getLocalStorage('user');

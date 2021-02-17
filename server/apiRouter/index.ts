@@ -6,25 +6,30 @@ const apiRouter = express.Router();
 
 apiRouter.route('/companies').get(
     async (req, res) => {
-        const company: Company[] = [{ id: '0', name: 'new' }, { id: '1', name: 'new1' }, { id: '2', name: 'new2' }, { id: '3', name: 'new3' }];
-        res.json(company);
+        knex<Company>('companies')
+            .select('*')
+            .then((companies: Company[]) => res.status(200).send(companies))
+            .catch((error: Error) => res.status(400).send(error.message))
 });
 
 apiRouter.route('/login').post(
     async (req, res) => {
-        let userData: User = null;
+        let userData = null;
         try {
-            userData = <User>JSON.parse(req.body.user); 
+            userData = JSON.parse(req.body.user); 
         } catch (e) {
-            userData = <User>req.body.user;
+            userData = req.body.user;
         }
 
-        knex<User>('users').select('*')
-            .where('id', userData.id) 
+        knex<User>('users')
+            .where({ email: userData.email })
+            .andWhere({ password: userData.password })
             .then((currentUser: User[]) => {
-                console.log(currentUser);
-                // res.json(currentUser[0]);
-                res.send();
+                if (currentUser.length) {
+                    res.status(200).send(currentUser[0]);
+                } else {
+                    res.status(404).send({ message: 'Not correct email or password' }) 
+                }
             })
             .catch((error: Error) => res.status(400).send(error.message))
 });
@@ -38,14 +43,15 @@ apiRouter.route('/user/add').post(
             newUser = <User>req.body.user;
         }
 
-        knex<User>('users').insert({ 
+        knex<User>('users')
+            .insert({ 
                 'email': newUser.email,
                 'name': newUser.name,
                 'password': newUser.password,
                 'companyId': newUser.companyId,
             })
             .then(() => res.send())
-            .catch((error : Error) => res.status(400).send(error.message))
+            .catch((error : Error) => res.status(500).send(error.message));
 });
 
 apiRouter.route('/user/edit').put(
@@ -57,18 +63,25 @@ apiRouter.route('/user/edit').put(
             userData = <User>req.body.user;
         }
 
-        knex<User>('users').where('id', userData.id) 
-            .update({ email: userData.email, name: userData.name, 
-                      password: userData.password, companyId: userData.companyId, 
+        knex<User>('users')
+            .where({ id: userData.id })
+            .update({ email: userData.email, 
+                    name: userData.name, 
+                    password: userData.password, 
             })
             .then((count: number) => {
                 if (count) {
-                    res.status(200).json({updated: count})
-                } else {
-                    res.status(404).json({message: "Record not found"})
+                    return knex<User>('users').select('*').where({ id: userData.id });
                 }
             })
-            .catch((error: Error) => res.status(500).send(error.message))
+            .then((currentUser: User[]) => {
+                if (currentUser.length) {
+                    res.status(200).send(currentUser[0]);
+                } else {
+                    res.status(404).send({ message: 'User Error' });
+                }
+            })
+            .catch((error: Error) => res.status(500).send(error.message));
 });
 
 apiRouter.route('/user/delete').delete(
@@ -80,10 +93,11 @@ apiRouter.route('/user/delete').delete(
             userData = <User>req.body.user;
         }
 
-        knex<User>('users').where('id', userData.id) 
+        knex<User>('users')
+            .where({ id: userData.id }) 
             .del()
-            .then(() => res.send(`Book ${userData.id} deleted.`))
-            .catch((error: Error) => res.status(400).send(error.message))
+            .then(() => res.status(200).send(`User ${userData.id} deleted.`))
+            .catch((error: Error) => res.status(404).send(error.message))
 });
 
 export default apiRouter;

@@ -44,9 +44,9 @@ const EditForm: React.FC = () => {
   const [userPassword, changePassword] = React.useState<string>(user.password);
   const [userName, changeUserName] = React.useState<string>(user.name);
 
-  const [isEmailValid, checkEmail] = React.useState<boolean>(false);
-  const [isPasswordValid, checkPassword] = React.useState<boolean>(false);
-  const [isNameValid, checkUserName] = React.useState<boolean>(false);
+  const [isEmailValid, checkEmail] = React.useState<boolean>(true);
+  const [isPasswordValid, checkPassword] = React.useState<boolean>(true);
+  const [isNameValid, checkUserName] = React.useState<boolean>(true);
 
   const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeEmail(e.target.value);
@@ -56,6 +56,11 @@ const EditForm: React.FC = () => {
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     changePassword(e.target.value);
     checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
+  };
+
+  const changeNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeUserName(e.target.value);
+    checkUserName(/[A-Za-z]/.test(e.target.value) && e.target.value.length > 3);
   };
 
   const editUser = () => {
@@ -112,13 +117,21 @@ const EditForm: React.FC = () => {
             placeholder="Enter your password"
             onChange={changePasswordHandler}
           />
+          <Input
+            fullWidth
+            required
+            value={userName}
+            type="text"
+            placeholder="Enter your name"
+            onChange={changeNameHandler}
+          />
           <Button
             onClick={editUser}
             variant="contained"
             color="secondary"
-            disabled={!(isEmailValid && isPasswordValid) || loading}
+            disabled={!(isEmailValid && isPasswordValid && isNameValid) || loading}
           >
-            Enter
+            Update
           </Button>
           {error
             ? <Alert variant="outlined" severity="error">

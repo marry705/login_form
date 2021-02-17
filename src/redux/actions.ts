@@ -11,12 +11,18 @@ export function login(data: userData): (dispatch: DispatchType) => void {
       },
       body: JSON.stringify({ 'user': data }),
     })
-      .then(res => res.json())
-      .then((data) => {
-        console.log(data);
-        //dispatch(set(data))
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          throw Error(res.statusText);
+        }
       })
-      .catch((error: Error) => dispatch(addError(error.message)))
+      .then((data: User) => dispatch(set(data)))
+      .catch((error: Error) => {
+        dispatch(addError(error.message));
+        setTimeout(() => dispatch(cleaneError()), 5000);
+      })
       .finally(() => dispatch(stopRequest()))
   }
 };
@@ -25,16 +31,24 @@ export function edit(data: User): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
     dispatch(startRequest());
     fetch('/api/user/edit', {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 'user': data }),
     })
-      .then(res => console.log(res.json()))
-      // .then(res => res.json())
-      // .then((data) => dispatch(set(data)))
-      .catch((error: Error) => dispatch(addError(error.message)))
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          throw Error(res.statusText);
+        }
+      })
+      .then((data: User) => dispatch(set(data)))
+      .catch((error: Error) => {
+        dispatch(addError(error.message));
+        setTimeout(() => dispatch(cleaneError()), 5000)
+      })
       .finally(() => dispatch(stopRequest()))
   }
 };
@@ -51,7 +65,10 @@ export function deleteUser(data: User): (dispatch: DispatchType) => void {
     })
       .then(res => res.json())
       .then(() => dispatch(logout()))
-      .catch((error: Error) => dispatch(addError(error.message)))
+      .catch((error: Error) => {
+        dispatch(addError(error.message));
+        setTimeout(() => dispatch(cleaneError()), 5000);
+      })
       .finally(() => dispatch(stopRequest()))
   }
 };
