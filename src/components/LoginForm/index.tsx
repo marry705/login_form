@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userData, UserState } from '../../redux/type';
 import { Link, Redirect } from 'react-router-dom';
 import { Input, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { UserData, UserState } from '../../redux/type';
 
 import { login } from '../../redux/actions';
 import { ROUTES } from '../../constants';
@@ -12,8 +12,10 @@ import { ROUTES } from '../../constants';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   navItem: {
     textDecoration: 'none',
+    marginBottom: theme.spacing(2),
   },
   formContainer: {
+    width: '20%',
     flex: '1 1 auto',
     margin: theme.spacing(2),
     padding: theme.spacing(2),
@@ -23,6 +25,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     alignItems: 'center',
     '& .MuiInput-root': {
       marginBottom: theme.spacing(2),
+    },
+    '& .MuiButton-root': {
+      marginBottom: theme.spacing(2),
+    },
+    '& .MuiAlert-root': {
+      width: '100%',
     },
   },
 }));
@@ -50,66 +58,66 @@ const LoginForm: React.FC = () => {
   };
 
   const setUser = () => {
-    const currentUser: userData = {
+    const currentUser: UserData = {
       email: userEmail,
-      password: userPassword
+      password: userPassword,
     };
 
     dispatch(login(currentUser));
   };
 
-  if (isAuth) { return <Redirect to={ROUTES.EDIT} /> }
+  if (isAuth) { return <Redirect to={ROUTES.EDIT} />; }
 
   return (
     <>
       {loading
-      ? 
-        <h1>Loading</h1>
-      :
-        <form
-          onSubmit={(e) => { e.preventDefault() }}
-          className={classes.formContainer}
-        >
-          <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
-          <Button
-            variant="contained"
-            color="secondary" 
-            >
-            Registration
-          </Button>
-        </Link>
-          <Input
-            fullWidth
-            required
-            value={userEmail}
-            type="email"
-            placeholder="Enter your email"
-            onChange={changeEmailHandler}
-          />
-          <Input
-            fullWidth
-            required
-            value={userPassword}
-            type="password"
-            placeholder="Enter your password"
-            onChange={changePasswordHandler}
-          />
-          <Button
-            onClick={setUser}
-            variant="contained"
-            color="secondary"
-            disabled={!(isEmailValid && isPasswordValid) || loading}
+        ? <h1>Loading</h1>
+        : (
+          <form
+            onSubmit={(e) => { e.preventDefault(); }}
+            className={classes.formContainer}
           >
-            Enter
-          </Button>
-          {error
-            ? <Alert variant="outlined" severity="error">
-                {error}
-              </Alert>
-            : null
-          }
-        </form>
-      }
+            <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
+              <Button
+                variant="contained"
+                color="secondary"
+              >
+                Registration
+              </Button>
+            </Link>
+            <Input
+              fullWidth
+              required
+              value={userEmail}
+              type="email"
+              placeholder="Enter your email"
+              onChange={changeEmailHandler}
+            />
+            <Input
+              fullWidth
+              required
+              value={userPassword}
+              type="password"
+              placeholder="Enter your password"
+              onChange={changePasswordHandler}
+            />
+            <Button
+              onClick={setUser}
+              variant="contained"
+              color="secondary"
+              disabled={!(isEmailValid && isPasswordValid) || loading}
+            >
+              Enter
+            </Button>
+            {error
+              ? (
+                <Alert variant="outlined" severity="error">
+                  {error}
+                </Alert>
+              )
+              : null}
+          </form>
+        )}
     </>
   );
 };

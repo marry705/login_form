@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Select, InputLabel, Input, Button } from '@material-ui/core';
+import {
+  Select, InputLabel, Input, Button,
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants';
-import { Company, User, InfoData } from '../../../server/types'
+import { Company, User, InfoData } from '../../../server/types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   navItem: {
@@ -12,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     textDecoration: 'none',
   },
   formContainer: {
+    width: '20%',
     flex: '1 1 auto',
     margin: theme.spacing(3),
     padding: theme.spacing(2),
@@ -24,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     '& .MuiInput-root': {
       marginBottom: theme.spacing(2),
     },
+    '& .MuiButton-root': {
+      marginBottom: theme.spacing(2),
+    },
     '& .MuiInputBase-root': {
       marginBottom: theme.spacing(2),
       width: '100%',
@@ -33,7 +39,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     '& .MuiFilledInput-root': {
       backgroundColor: theme.palette.background.default,
-    }
+    },
+    '& .MuiAlert-root': {
+      width: '100%',
+    },
   },
 }));
 
@@ -49,9 +58,9 @@ const RegistrationForm: React.FC = () => {
 
   React.useEffect(() => {
     fetch('/api/companies')
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((res) => {
-        setСompanies(res); 
+        setСompanies(res);
         setUserCompany(res[0].id);
       });
   }, []);
@@ -67,7 +76,7 @@ const RegistrationForm: React.FC = () => {
       companyId: userCompany,
       name: userName,
       email: userEmail,
-      password: userPassword
+      password: userPassword,
     };
 
     checkStatus(true);
@@ -77,16 +86,15 @@ const RegistrationForm: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 'user' : newUser }),
+      body: JSON.stringify({ user: newUser }),
     })
-      .then((req) => {
-        console.log(req);
-        setInfo({ message: 'User was created', type: 'success'});
+      .then(() => {
+        setInfo({ message: 'User was created', type: 'success' });
       })
-      .catch((error) => setInfo({ message: 'req', type: 'error'}))
-      .finally(() => checkStatus(false))
+      .catch((error: Error) => setInfo({ message: error.message, type: 'error' }))
+      .finally(() => checkStatus(false));
 
-      setTimeout(() => setInfo(null), 5000);
+    // clearError = setTimeout(() => setInfo(null), 5000);
   };
 
   const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,8 +125,8 @@ const RegistrationForm: React.FC = () => {
         <Link to={ROUTES.LOGIN} className={classes.navItem}>
           <Button
             variant="contained"
-            color="secondary" 
-            >
+            color="secondary"
+          >
             Login
           </Button>
         </Link>
@@ -154,9 +162,8 @@ const RegistrationForm: React.FC = () => {
           value={userCompany}
           onChange={handleChangeCompany}
         >
-          { companies.map(company =>
-            <option key={company.id} value={company.id}>{company.name}</option>
-          )};
+          { companies.map((company) => <option key={company.id} value={company.id}>{company.name}</option>)}
+          ;
         </Select>
         <Button
           onClick={registrationUser}
@@ -167,11 +174,12 @@ const RegistrationForm: React.FC = () => {
           Enter
         </Button>
         {info
-          ? <Alert severity={info.type}>
+          ? (
+            <Alert severity={info.type}>
               {info.message}
             </Alert>
-          : null
-        }
+          )
+          : null}
       </form>
     </>
   );

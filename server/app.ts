@@ -1,9 +1,9 @@
 import express from 'express';
 import path from 'path';
-import apiRouter from './apiRouter';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import apiRouter from './apiRouter';
 
 const app = express();
 

@@ -1,14 +1,16 @@
 import { USER } from '../constants';
-import { UserState, authAction, errorAddAction, setUserAction } from './type';
+import {
+  UserState, authAction, errorAddAction, setUserAction,
+} from './type';
 import { getLocalStorage, setLocalStorage, clearStorage } from '../services/storageService';
 
 const user = getLocalStorage('user');
 
 const initialState: UserState = {
-    user,
-    error: '', 
-    loading: false,
-    isAuth: !user,
+  user,
+  error: '',
+  loading: false,
+  isAuth: !!user,
 };
 
 const rootReducer = (
@@ -27,8 +29,8 @@ const rootReducer = (
     case USER.LOGOUT:
 
       clearStorage('user');
-      return { ...state, user: {}, isAuth: false };
-    
+      return { ...state, user: null, isAuth: false };
+
     case USER.SET_USER:
 
       setLocalStorage('user', (<setUserAction>action).payload);

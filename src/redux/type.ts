@@ -6,9 +6,14 @@ export type User = {
     name: string,
     email: string,
     password: string
-} | {};
+};
 
-export type userData = {
+export type Company = {
+    id: string,
+    name: string,
+};
+
+export type UserData = {
     email: string,
     password: string
 };
