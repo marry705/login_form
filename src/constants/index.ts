@@ -4,13 +4,17 @@ export const ROUTES = {
   EDIT: '/edit',
 };
 
-export const USER = {
+export const APPLICATION = {
   STOP_REQUEST: 'STOP_REQUEST',
   START_REQUEST: 'START_REQUEST',
+  ADD_ERROR: 'ADD_ERROR',
+  ADD_INFO: 'ADD_INFO',
+  CLEANE_INFO: 'CLEANE_INFO',
+};
+
+export const USER = {
   SET_USER: 'SET_USER',
   LOGIN: 'LOGIN',
   EDIT: 'EDIT',
   LOGOUT: 'LOGOUT',
-  ADD_ERROR: 'ADD_ERROR',
-  CLEANE_ERROR: 'CLEANE_ERROR',
 };

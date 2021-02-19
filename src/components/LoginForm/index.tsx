@@ -4,8 +4,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { Input, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { UserData, UserState } from '../../redux/type';
 
+import { UserData, AppState, UserState } from '../../redux/type';
 import { login } from '../../redux/actions';
 import { ROUTES } from '../../constants';
 
@@ -39,7 +39,8 @@ const LoginForm: React.FC = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const { isAuth, error, loading } = useSelector((state: UserState) => state);
+  const { isAuth } = useSelector((state: UserState) => state);
+  const { info, loading } = useSelector((state: AppState) => state);
 
   const [userEmail, changeEmail] = React.useState<string>('');
   const [userPassword, changePassword] = React.useState<string>('');
@@ -109,10 +110,10 @@ const LoginForm: React.FC = () => {
             >
               Enter
             </Button>
-            {error
+            {info
               ? (
-                <Alert variant="outlined" severity="error">
-                  {error}
+                <Alert variant="outlined" severity={info.type}>
+                  {info.type}
                 </Alert>
               )
               : null}

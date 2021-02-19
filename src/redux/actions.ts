@@ -1,7 +1,7 @@
 import {
-  UserData, User, authAction, DispatchType,
+  UserData, User, authAction, appAction, DispatchType,
 } from './type';
-import { USER } from '../constants';
+import { USER, APPLICATION } from '../constants';
 
 export const logout = (): authAction => ({
   type: USER.LOGOUT,
@@ -13,29 +13,34 @@ export const set = (data: User): authAction => ({
   payload: data,
 });
 
-export const addError = (data: string): authAction => ({
-  type: USER.ADD_ERROR,
+export const addError = (data: string): appAction => ({
+  type: APPLICATION.ADD_ERROR,
   payload: data,
 });
 
-export const cleaneError = (): authAction => ({
-  type: USER.CLEANE_ERROR,
+export const addInfo = (data: string): appAction => ({
+  type: APPLICATION.ADD_INFO,
+  payload: data,
+});
+
+export const cleaneInfo = (): appAction => ({
+  type: APPLICATION.CLEANE_INFO,
   payload: null,
 });
 
-export const startRequest = (): authAction => ({
-  type: USER.START_REQUEST,
+export const startRequest = (): appAction => ({
+  type: APPLICATION.START_REQUEST,
   payload: null,
 });
 
-export const stopRequest = (): authAction => ({
-  type: USER.STOP_REQUEST,
+export const stopRequest = (): appAction => ({
+  type: APPLICATION.STOP_REQUEST,
   payload: null,
 });
 
 export function login(data: UserData): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
-    dispatch(cleaneError());
+    dispatch(cleaneInfo());
     dispatch(startRequest());
     fetch('/api/login', {
       method: 'POST',
@@ -53,7 +58,7 @@ export function login(data: UserData): (dispatch: DispatchType) => void {
       .then((user: User) => dispatch(set(user)))
       .catch((error: Error) => {
         dispatch(addError(error.message));
-        setTimeout(() => dispatch(cleaneError()), 5000);
+        setTimeout(() => dispatch(cleaneInfo()), 5000);
       })
       .finally(() => dispatch(stopRequest()));
   };
@@ -61,7 +66,7 @@ export function login(data: UserData): (dispatch: DispatchType) => void {
 
 export function edit(data: User): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
-    dispatch(cleaneError());
+    dispatch(cleaneInfo());
     dispatch(startRequest());
     fetch('/api/user/edit', {
       method: 'PUT',
@@ -77,9 +82,10 @@ export function edit(data: User): (dispatch: DispatchType) => void {
         throw Error(res.statusText);
       })
       .then((user: User) => dispatch(set(user)))
+      .then(() => dispatch(addInfo('User was edit.')))
       .catch((error: Error) => {
         dispatch(addError(error.message));
-        setTimeout(() => dispatch(cleaneError()), 5000);
+        setTimeout(() => dispatch(cleaneInfo()), 5000);
       })
       .finally(() => dispatch(stopRequest()));
   };
@@ -87,7 +93,7 @@ export function edit(data: User): (dispatch: DispatchType) => void {
 
 export function deleteUser(data: User): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
-    dispatch(cleaneError());
+    dispatch(cleaneInfo());
     dispatch(startRequest());
     fetch('/api/user/delete', {
       method: 'DELETE',
@@ -104,7 +110,7 @@ export function deleteUser(data: User): (dispatch: DispatchType) => void {
       })
       .catch((error: Error) => {
         dispatch(addError(error.message));
-        setTimeout(() => dispatch(cleaneError()), 5000);
+        setTimeout(() => dispatch(cleaneInfo()), 5000);
       })
       .finally(() => dispatch(stopRequest()));
   };

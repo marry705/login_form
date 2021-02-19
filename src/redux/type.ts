@@ -1,4 +1,5 @@
-import { USER } from '../constants';
+import { CombinedState } from 'redux';
+import { USER, APPLICATION } from '../constants';
 
 export type User = {
     id: string,
@@ -6,24 +7,37 @@ export type User = {
     name: string,
     email: string,
     password: string
-};
+}
 
 export type Company = {
     id: string,
     name: string,
-};
+}
 
 export type UserData = {
     email: string,
     password: string
-};
+}
 
 export type UserState = {
     user: User,
-    error: string,
-    loading: boolean,
     isAuth: boolean,
 }
+
+export type InfoData = {
+    message: string,
+    type: 'error' | 'success',
+}
+
+export type AppState = {
+    info: InfoData,
+    loading: boolean,
+}
+
+export type MainState = CombinedState<{
+    user: UserState,
+    application: AppState,
+}>
 
 export type setUserAction = {
     type: typeof USER.SET_USER,
@@ -36,30 +50,34 @@ interface logoutAction {
 }
 
 interface stopRequestAction {
-    type: typeof USER.STOP_REQUEST,
+    type: typeof APPLICATION.STOP_REQUEST,
     payload: null,
 }
 
 interface startRequestAction {
-    type: typeof USER.START_REQUEST,
+    type: typeof APPLICATION.START_REQUEST,
     payload: null,
 }
 
 export type errorAddAction = {
-    type: typeof USER.ADD_ERROR,
+    type: typeof APPLICATION.ADD_ERROR,
     payload: string,
 }
 
-interface errorCreaneAction {
-    type: typeof USER.CLEANE_ERROR,
+interface infoAddAction {
+    type: typeof APPLICATION.ADD_INFO,
     payload: null,
 }
 
-export type authAction = logoutAction |
-    setUserAction |
-    stopRequestAction |
-    startRequestAction |
-    errorAddAction |
-    errorCreaneAction;
+interface cleaneInfoAction {
+    type: typeof APPLICATION.CLEANE_INFO,
+    payload: null,
+}
 
-export type DispatchType = (args: authAction) => authAction;
+export type authAction = logoutAction | setUserAction;
+
+export type appAction = stopRequestAction | startRequestAction | errorAddAction | infoAddAction | cleaneInfoAction;
+
+export type mainAction = authAction | appAction;
+
+export type DispatchType = (args: mainAction) => mainAction;

@@ -1,12 +1,18 @@
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   Select, InputLabel, Input, Button,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+
 import { ROUTES } from '../../constants';
-import { Company, User, InfoData } from '../../../server/types';
+import { AppState } from '../../redux/type';
+import {
+  stopRequest, startRequest, cleaneInfo, addError, addInfo,
+} from '../../redux/actions';
+import { Company, User } from '../../../server/types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   navItem: {
@@ -49,8 +55,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const RegistrationForm: React.FC = () => {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+  const { info, loading } = useSelector((state: AppState) => state);
+
   const [companies, setСompanies] = React.useState<Company[]>([]);
-  const [info, setInfo] = React.useState<InfoData>(null);
   const [userCompany, setUserCompany] = React.useState<string>('');
   const [userEmail, changeEmail] = React.useState<string>('');
   const [userPassword, changePassword] = React.useState<string>('');
@@ -68,7 +76,6 @@ const RegistrationForm: React.FC = () => {
   const [isEmailValid, checkEmail] = React.useState<boolean>(false);
   const [isPasswordValid, checkPassword] = React.useState<boolean>(false);
   const [isNameValid, checkUserName] = React.useState<boolean>(false);
-  const [isLoading, checkStatus] = React.useState<boolean>(false);
 
   const registrationUser = () => {
     const newUser: User = {
@@ -79,7 +86,8 @@ const RegistrationForm: React.FC = () => {
       password: userPassword,
     };
 
-    checkStatus(true);
+    dispatch(cleaneInfo());
+    dispatch(startRequest());
 
     fetch('/api/user/add', {
       method: 'POST',
@@ -89,12 +97,14 @@ const RegistrationForm: React.FC = () => {
       body: JSON.stringify({ user: newUser }),
     })
       .then(() => {
-        setInfo({ message: 'User was created', type: 'success' });
+        dispatch(addInfo('User was created.'));
       })
-      .catch((error: Error) => setInfo({ message: error.message, type: 'error' }))
-      .finally(() => checkStatus(false));
+      .catch((err: Error) => dispatch(addError(err.message)))
+      .finally(() => dispatch(stopRequest()));
 
-    // clearError = setTimeout(() => setInfo(null), 5000);
+    console.log(info);
+
+    setTimeout(() => dispatch(cleaneInfo()), 5000);
   };
 
   const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,14 +179,14 @@ const RegistrationForm: React.FC = () => {
           onClick={registrationUser}
           variant="contained"
           color="secondary"
-          disabled={!(isEmailValid && isPasswordValid && isNameValid) || isLoading}
+          disabled={!(isEmailValid && isPasswordValid && isNameValid) || loading}
         >
           Enter
         </Button>
         {info
           ? (
-            <Alert severity={info.type}>
-              {info.message}
+            <Alert variant="outlined" severity={info.type}>
+              {info.type}
             </Alert>
           )
           : null}

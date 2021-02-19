@@ -7,8 +7,10 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { User, UserState, Company } from '../../redux/type';
 
+import {
+  User, UserState, AppState, Company,
+} from '../../redux/type';
 import { edit, deleteUser, logout } from '../../redux/actions';
 import { ROUTES } from '../../constants';
 
@@ -50,9 +52,8 @@ const EditForm: React.FC = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const {
-    isAuth, error, loading, user,
-  } = useSelector((state: UserState) => state);
+  const { isAuth, user } = useSelector((state: UserState) => state);
+  const { info, loading } = useSelector((state: AppState) => state);
 
   const [companies, setСompanies] = React.useState<Company[]>([]);
   const [userEmail, changeEmail] = React.useState<string>('');
@@ -182,10 +183,10 @@ const EditForm: React.FC = () => {
               >
                 Update
               </Button>
-              {error
+              {info
                 ? (
-                  <Alert variant="outlined" severity="error">
-                    {error}
+                  <Alert variant="outlined" severity={info.type}>
+                    {info.type}
                   </Alert>
                 )
                 : null}
