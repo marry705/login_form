@@ -13,11 +13,11 @@ const knex = Knex({
 });
 
 const data = [
-  { id: 1, name: 'company1' },
-  { id: 2, name: 'company2' },
-  { id: 3, name: 'company3' },
-  { id: 4, name: 'company4' },
-  { id: 5, name: 'company5' },
+  { id: '1', name: 'company1' },
+  { id: '2', name: 'company2' },
+  { id: '3', name: 'company3' },
+  { id: '4', name: 'company4' },
+  { id: '5', name: 'company5' },
 ];
 
 knex.schema.hasTable('companies')

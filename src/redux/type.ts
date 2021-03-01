@@ -6,7 +6,8 @@ export type User = {
     companyId: string,
     name: string,
     email: string,
-    password: string
+    password: string,
+    photo: FormData,
 }
 
 export type Company = {
@@ -64,9 +65,9 @@ export type errorAddAction = {
     payload: string,
 }
 
-interface infoAddAction {
+export type infoAddAction = {
     type: typeof APPLICATION.ADD_INFO,
-    payload: null,
+    payload: string,
 }
 
 interface cleaneInfoAction {

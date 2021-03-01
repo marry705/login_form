@@ -1,12 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { Input, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { UserData, AppState, UserState } from '../../redux/type';
-import { login } from '../../redux/actions';
+import EmailInput from '../FormComponents/EmailInput';
+import PasswordInput from '../FormComponents/PasswordInput';
+import { UserData, MainState } from '../../redux/type';
+import { login, cleaneInfo } from '../../redux/actions';
 import { ROUTES } from '../../constants';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -23,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.palette.background.default,
     '& .MuiInput-root': {
       marginBottom: theme.spacing(2),
     },
@@ -39,8 +43,8 @@ const LoginForm: React.FC = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const { isAuth } = useSelector((state: UserState) => state);
-  const { info, loading } = useSelector((state: AppState) => state);
+  const { isAuth } = useSelector((state: MainState) => state.user);
+  const { info, loading } = useSelector((state: MainState) => state.application);
 
   const [userEmail, changeEmail] = React.useState<string>('');
   const [userPassword, changePassword] = React.useState<string>('');
@@ -48,15 +52,9 @@ const LoginForm: React.FC = () => {
   const [isEmailValid, checkEmail] = React.useState<boolean>(false);
   const [isPasswordValid, checkPassword] = React.useState<boolean>(false);
 
-  const changeEmailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    changeEmail(e.target.value);
-    checkEmail(/.+@.+\.[A-Za-z]+$/.test(e.target.value));
-  };
-
-  const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    changePassword(e.target.value);
-    checkPassword(/[A-Za-z0-9]/.test(e.target.value) && e.target.value.length > 7);
-  };
+  React.useEffect(() => {
+    dispatch(cleaneInfo());
+  }, []);
 
   const setUser = () => {
     const currentUser: UserData = {
@@ -71,54 +69,36 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      {loading
-        ? <h1>Loading</h1>
-        : (
-          <form
-            onSubmit={(e) => { e.preventDefault(); }}
-            className={classes.formContainer}
+      <form
+        onSubmit={(e) => { e.preventDefault(); }}
+        className={classes.formContainer}
+      >
+        <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
+          <Button
+            variant="contained"
+            color="secondary"
           >
-            <Link to={ROUTES.REGISTRATION} className={classes.navItem}>
-              <Button
-                variant="contained"
-                color="secondary"
-              >
-                Registration
-              </Button>
-            </Link>
-            <Input
-              fullWidth
-              required
-              value={userEmail}
-              type="email"
-              placeholder="Enter your email"
-              onChange={changeEmailHandler}
-            />
-            <Input
-              fullWidth
-              required
-              value={userPassword}
-              type="password"
-              placeholder="Enter your password"
-              onChange={changePasswordHandler}
-            />
-            <Button
-              onClick={setUser}
-              variant="contained"
-              color="secondary"
-              disabled={!(isEmailValid && isPasswordValid) || loading}
-            >
-              Enter
-            </Button>
-            {info
-              ? (
-                <Alert variant="outlined" severity={info.type}>
-                  {info.type}
-                </Alert>
-              )
-              : null}
-          </form>
-        )}
+            Registration
+          </Button>
+        </Link>
+        <EmailInput value={userEmail} changeEmail={changeEmail} checkEmail={checkEmail} />
+        <PasswordInput value={userPassword} changePassword={changePassword} checkPassword={checkPassword} />
+        <Button
+          onClick={setUser}
+          variant="contained"
+          color="secondary"
+          disabled={!(isEmailValid && isPasswordValid) || loading}
+        >
+          Enter
+        </Button>
+        {info
+          ? (
+            <Alert variant="outlined" severity={info.type}>
+              {info.type}
+            </Alert>
+          )
+          : null}
+      </form>
     </>
   );
 };

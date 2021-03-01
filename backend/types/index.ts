@@ -3,7 +3,8 @@ export type User = {
     companyId: string,
     name: string,
     email: string,
-    password: string
+    password: string,
+    photo: string,
 };
 
 export type Company = {

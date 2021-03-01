@@ -68,7 +68,7 @@ export function edit(data: User): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
     dispatch(cleaneInfo());
     dispatch(startRequest());
-    fetch('/api/user/edit', {
+    fetch(`/api/user/${data.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -95,12 +95,11 @@ export function deleteUser(data: User): (dispatch: DispatchType) => void {
   return (dispatch: DispatchType) => {
     dispatch(cleaneInfo());
     dispatch(startRequest());
-    fetch('/api/user/delete', {
+    fetch(`/api/user/${data.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: data }),
     })
       .then((res) => {
         if (res.status === 200) {

@@ -10,7 +10,7 @@ import EditForm from './components/EditForm';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     textAlign: 'center',
     height: '100vh',
     display: 'flex',

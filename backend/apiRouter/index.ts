@@ -1,20 +1,21 @@
 import express from 'express';
 import { Company, User } from '../types';
+import ErrorHandler from '../errorHandler/errorHandler';
 import knex from '../db';
 
 const apiRouter = express.Router();
 
 apiRouter.route('/companies').get(
-  async (req, res) => {
+  async (req, res, next) => {
     knex<Company>('companies')
       .select('*')
       .then((companies: Company[]) => res.status(200).send(companies))
-      .catch((error: Error) => res.status(400).send(error.message));
+      .catch((error: Error) => next(error));
   },
 );
 
 apiRouter.route('/login').post(
-  async (req, res) => {
+  async (req, res, next) => {
     let userData = null;
     try {
       userData = JSON.parse(req.body.user);
@@ -29,15 +30,15 @@ apiRouter.route('/login').post(
         if (currentUser.length) {
           res.status(200).send(currentUser[0]);
         } else {
-          res.status(404).send({ message: 'Not correct email or password' });
+          throw new ErrorHandler(404, 'Not correct email or password');
         }
       })
-      .catch((error: Error) => res.status(400).send(error.message));
+      .catch((error: Error) => next(error));
   },
 );
 
 apiRouter.route('/user/add').post(
-  async (req, res) => {
+  async (req, res, next) => {
     let newUser: User = null;
     try {
       newUser = <User>JSON.parse(req.body.user);
@@ -47,18 +48,18 @@ apiRouter.route('/user/add').post(
 
     knex<User>('users')
       .insert({
-        email: newUser.email,
         name: newUser.name,
+        email: newUser.email,
         password: newUser.password,
         companyId: newUser.companyId,
       })
       .then(() => res.status(200).send({ message: 'User was add.' }))
-      .catch((error : Error) => res.status(500).send(error.message));
+      .catch((error : Error) => next(error));
   },
 );
 
-apiRouter.route('/user/edit').put(
-  async (req, res) => {
+apiRouter.route('/user/:id').put(
+  async (req, res, next) => {
     let userData: User = null;
     try {
       userData = <User>JSON.parse(req.body.user);
@@ -67,38 +68,31 @@ apiRouter.route('/user/edit').put(
     }
 
     knex<User>('users')
-      .where({ id: userData.id })
+      .where({ id: req.params.id })
       .update({
         email: userData.email,
         name: userData.name,
         password: userData.password,
       })
-      .then(() => knex<User>('users').select('*').where({ id: userData.id }))
+      .then(() => knex<User>('users').select('*').where({ id: req.params.id }))
       .then((currentUser: User[]) => {
         if (currentUser.length) {
           res.status(200).send(currentUser[0]);
         } else {
-          res.status(404).send({ message: 'User Error' });
+          throw new ErrorHandler(404, 'User Error');
         }
       })
-      .catch((error: Error) => res.status(500).send(error.message));
+      .catch((error: Error) => next(error));
   },
 );
 
-apiRouter.route('/user/delete').delete(
-  async (req, res) => {
-    let userData: User = null;
-    try {
-      userData = <User>JSON.parse(req.body.user);
-    } catch (e) {
-      userData = <User>req.body.user;
-    }
-
+apiRouter.route('/user/:id').delete(
+  async (req, res, next) => {
     knex<User>('users')
-      .where({ id: userData.id })
+      .where({ id: req.params.id })
       .del()
-      .then(() => res.status(200).send(`User ${userData.id} deleted.`))
-      .catch((error: Error) => res.status(404).send(error.message));
+      .then(() => res.status(200).send(`User ${req.params.id} deleted.`))
+      .catch((error: Error) => next(error));
   },
 );
 
