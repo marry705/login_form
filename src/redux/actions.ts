@@ -58,7 +58,9 @@ export function login(data: UserData): (dispatch: DispatchType) => void {
       .then((user: User) => dispatch(set(user)))
       .catch((error: Error) => {
         dispatch(addError(error.message));
-        setTimeout(() => dispatch(cleaneInfo()), 5000);
+        setTimeout(() => {
+          dispatch(cleaneInfo());
+        }, 5000);
       })
       .finally(() => dispatch(stopRequest()));
   };
@@ -82,10 +84,17 @@ export function edit(data: User): (dispatch: DispatchType) => void {
         throw Error(res.statusText);
       })
       .then((user: User) => dispatch(set(user)))
-      .then(() => dispatch(addInfo('User was edit.')))
+      .then(() => {
+        dispatch(addInfo('User was edit.'));
+        setTimeout(() => {
+          dispatch(cleaneInfo());
+        }, 5000);
+      })
       .catch((error: Error) => {
         dispatch(addError(error.message));
-        setTimeout(() => dispatch(cleaneInfo()), 5000);
+        setTimeout(() => {
+          dispatch(cleaneInfo());
+        }, 5000);
       })
       .finally(() => dispatch(stopRequest()));
   };
@@ -109,7 +118,9 @@ export function deleteUser(data: User): (dispatch: DispatchType) => void {
       })
       .catch((error: Error) => {
         dispatch(addError(error.message));
-        setTimeout(() => dispatch(cleaneInfo()), 5000);
+        setTimeout(() => {
+          dispatch(cleaneInfo());
+        }, 5000);
       })
       .finally(() => dispatch(stopRequest()));
   };
