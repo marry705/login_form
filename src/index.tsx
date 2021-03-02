@@ -6,7 +6,7 @@ import {
   createStore, Store, applyMiddleware, AnyAction,
 } from 'redux';
 import { Provider } from 'react-redux';
-import rootReducer from './redux/index';
+import rootReducer from './redux';
 import { DispatchType, MainState } from './redux/type';
 
 import App from './App';

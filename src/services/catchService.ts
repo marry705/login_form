@@ -11,4 +11,4 @@ async function getCompanies(): Promise<Company[]> {
   return companies;
 }
 
-export default getCompanies;
+export { getCompanies };

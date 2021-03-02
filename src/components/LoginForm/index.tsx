@@ -3,11 +3,11 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { Button } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import EmailInput from '../FormComponents/EmailInput';
-import PasswordInput from '../FormComponents/PasswordInput';
+import InputField from '../FormComponents/InputField';
+import InfoAlert from '../FormComponents/InfoAlert';
+import ButtonElement from '../FormComponents/ButtonElement';
 import { UserData, MainState } from '../../redux/type';
 import { login, cleaneInfo } from '../../redux/actions';
 import { ROUTES } from '../../constants';
@@ -19,14 +19,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   formContainer: {
     width: '20%',
+    overflow: 'auto',
     flex: '1 1 auto',
-    margin: theme.spacing(2),
+    margin: theme.spacing(3),
     padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: theme.palette.background.default,
+    borderRadius: theme.spacing(2),
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.palette.background.default,
     '& .MuiInput-root': {
       marginBottom: theme.spacing(2),
     },
@@ -81,23 +83,28 @@ const LoginForm: React.FC = () => {
             Registration
           </Button>
         </Link>
-        <EmailInput value={userEmail} changeEmail={changeEmail} checkEmail={checkEmail} />
-        <PasswordInput value={userPassword} changePassword={changePassword} checkPassword={checkPassword} />
-        <Button
+        <InputField
+          type="email"
+          placeholder="Enter your email"
+          value={userEmail}
+          reg={/.+@.+\.[A-Za-z]+$/}
+          changeField={changeEmail}
+          checkField={checkEmail}
+        />
+        <InputField
+          type="password"
+          placeholder="Enter your password"
+          value={userPassword}
+          reg={/[A-Za-z0-9]/}
+          length={7}
+          changeField={changePassword}
+          checkField={checkPassword}
+        />
+        <ButtonElement
           onClick={setUser}
-          variant="contained"
-          color="secondary"
           disabled={!(isEmailValid && isPasswordValid) || loading}
-        >
-          Enter
-        </Button>
-        {info
-          ? (
-            <Alert variant="outlined" severity={info.type}>
-              {info.type}
-            </Alert>
-          )
-          : null}
+        />
+        <InfoAlert info={info} />
       </form>
     </>
   );

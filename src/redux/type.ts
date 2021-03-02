@@ -7,7 +7,6 @@ export type User = {
     name: string,
     email: string,
     password: string,
-    photo: FormData,
 }
 
 export type Company = {

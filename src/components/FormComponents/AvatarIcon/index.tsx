@@ -1,28 +1,29 @@
 import * as React from 'react';
 import { Avatar } from '@material-ui/core';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 interface Props {
-    userPhoto: FormData,
-    changeUserPhoto: React.Dispatch<React.SetStateAction<FormData>>,
+    src: string,
+    name: string,
 }
 
-const AvatarIcon: React.FC<Props> = ({ userPhoto, changeUserPhoto }: Props) => {
-  const onFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files[0];
-    const data = new FormData();
-    data.append('file', selectedFile, selectedFile.name);
-    changeUserPhoto(data);
-    console.log(data);
-  };
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
+}));
+
+const AvatarIcon: React.FC<Props> = ({ src, name }: Props) => {
+  const classes = useStyles();
 
   return (
     <>
-      <input
-        type="file"
-        accept="image/png, image/jpeg"
-        onChange={onFileSelected}
+      <Avatar
+        alt={name}
+        src={src}
+        className={classes.large}
       />
-      <Avatar alt="yhui" src="/broken-image.jpg" />
     </>
   );
 };
