@@ -16,7 +16,12 @@ import ButtonElement from '.';
 
 const onClick = jest.fn((): void => {});
 
-beforeEach(() => {
+afterEach(() => {
+  jest.clearAllMocks();
+  cleanup();
+});
+
+test('Checking the initial rendering of the component ButtonElement', async () => {
   const store: Store<MainState, AnyAction> & { dispatch: DispatchType } = createStore(rootReducer, applyMiddleware(thunk));
 
   act(() => {
@@ -28,16 +33,33 @@ beforeEach(() => {
       </Provider>,
     );
   });
-});
 
-afterEach(() => {
-  jest.clearAllMocks();
-  cleanup();
-});
+  const button = await screen.getByRole('button', { name: 'Enter' });
+  expect(button).toBeInTheDocument();
 
-test('Checking the initial rendering of the component ButtonElement', async () => {
-  const burron = await screen.getByRole('button', { name: 'Enter' });
-  expect(burron).toBeInTheDocument();
-  fireEvent.click(burron);
+  fireEvent.click(button);
   expect(onClick).toHaveBeenCalledTimes(1);
+});
+
+test('Checking the initial rendering of the component ButtonElement with props', async () => {
+  const buttonName = 'Name';
+  const store: Store<MainState, AnyAction> & { dispatch: DispatchType } = createStore(rootReducer, applyMiddleware(thunk));
+
+  act(() => {
+    render(
+      <Provider store={store}>
+        <ButtonElement
+          onClick={onClick}
+          name={buttonName}
+          disabled
+        />
+      </Provider>,
+    );
+  });
+
+  const button = await screen.getByRole('button', { name: buttonName });
+  expect(button).toBeInTheDocument();
+
+  fireEvent.click(button);
+  expect(onClick).toHaveBeenCalledTimes(0);
 });

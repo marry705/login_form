@@ -2,7 +2,7 @@
 import * as React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import {
-  render, screen, cleanup,
+  render, screen, cleanup, fireEvent,
 } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import {
@@ -21,7 +21,7 @@ const data: Company[] = [
   { id: '4', name: 'company4' },
   { id: '5', name: 'company5' },
 ];
-const onChange = jest.fn((): void => {});
+const onChange = jest.fn((value: string): string => value);
 
 beforeEach(() => {
   const store: Store<MainState, AnyAction> & { dispatch: DispatchType } = createStore(rootReducer, applyMiddleware(thunk));
@@ -47,8 +47,26 @@ afterEach(() => {
 test('Checking the initial rendering of the component CompanySelect', async () => {
   const label = await screen.findByText('Company');
   expect(label).toBeInTheDocument();
-  let select = await screen.findByText(data[2].name);
-  expect(select).toBeInTheDocument();
-  select = await screen.findByText(data[4].name);
-  expect(select).toBeInTheDocument();
+
+  const selector = await document.querySelector('select');
+  expect(selector).toBeInTheDocument();
+  expect(selector.value).toBe('2');
+
+  const options = await document.querySelectorAll('option');
+  expect(options.length).toBe(5);
+});
+
+test('Checking the select function of the component CompanySelect', async () => {
+  const selector = await document.querySelector('select');
+  fireEvent.change(selector, {
+    target: { value: '1' },
+  });
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange).toHaveBeenLastCalledWith('1');
+
+  fireEvent.change(selector, {
+    target: { value: '3' },
+  });
+  expect(onChange).toHaveBeenCalledTimes(2);
+  expect(onChange).toHaveBeenLastCalledWith('3');
 });
