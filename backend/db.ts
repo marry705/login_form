@@ -39,7 +39,7 @@ knex.schema.hasTable('companies')
   .catch((error: Error) => console.error(`There was an error setting up the database: ${error.message}`));
 
 knex.schema.hasTable('users')
-  .then((exists) => {
+  .then((exists: boolean): Promise<void> => {
     if (!exists) {
       return knex.schema.createTable('users', (table: Knex.TableBuilder) => {
         table.increments('id').primary();
